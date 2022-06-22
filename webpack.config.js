@@ -13,9 +13,38 @@ module.exports = {
     tickets: './assets/js/tickets.js',
   },
   output: {
-    // The name of each attribute in the entry object will be used in place of [name] in bundle.js
     filename: '[name].bundle.js',
     path: __dirname + '/dist',
+  },
+  module: {
+    rules: [
+      {
+        // We can expand this to test other files as well
+        test: /\.jpg$/i,
+        use: [
+          {
+            // The actual loader is implemented here
+            loader: 'file-loader',
+            // By adding the below options, loader will not
+            // modify the name of the image files, in other cases, the images
+            // names would've been like 'funafaioof23r2h3.png'
+            options: {
+              esModule: false,
+              name(file) {
+                return '[path][name].[ext]';
+              },
+              publicPath: function (url) {
+                return url.replace('../', '/assets/');
+              },
+            },
+          },
+          {
+            // The below line will optimize the images (reduce in size) that get emitted (added to dist)
+            loader: 'image-webpack-loader',
+          },
+        ],
+      },
+    ],
   },
   // The mode in which we want the webpack to run
   // By default, webpack runs in production mode.
