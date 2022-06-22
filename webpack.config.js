@@ -1,13 +1,21 @@
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 const path = require('path');
 
 const webpack = require('webpack');
 
 module.exports = {
-  entry: './assets/js/script.js', // The root of the bundle and the beginning ofo the dependency graph
-  // webpack will take the above entry point, bundle that cde and 'output' the bundled code to a folder
+  entry: {
+    app: './assets/js/script.js',
+    events: './assets/js/events.js',
+    schedule: './assets/js/schedule.js',
+    tickets: './assets/js/tickets.js',
+  },
   output: {
-    path: path.resolve(__dirname, 'dist'), // Common practice is to put the bundled code in a 'dist' (distribution) folder
-    filename: 'main.bundle.js',
+    // The name of each attribute in the entry object will be used in place of [name] in bundle.js
+    filename: '[name].bundle.js',
+    path: __dirname + '/dist',
   },
   // The mode in which we want the webpack to run
   // By default, webpack runs in production mode.
@@ -17,6 +25,9 @@ module.exports = {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static', // the report outputs to an HTML file in the dist folder
     }),
   ],
 };
