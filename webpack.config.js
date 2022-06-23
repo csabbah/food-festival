@@ -1,11 +1,11 @@
+const webpack = require('webpack');
 const BundleAnalyzerPlugin =
   require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
+// const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
+// const WebpackPwaManifest = require("webpack-pwa-manifest");
 const path = require('path');
 
-const webpack = require('webpack');
-
-module.exports = {
+const config = {
   entry: {
     app: './assets/js/script.js',
     events: './assets/js/events.js',
@@ -13,14 +13,14 @@ module.exports = {
     tickets: './assets/js/tickets.js',
   },
   output: {
+    path: path.join(__dirname + '/dist'),
     filename: '[name].bundle.js',
-    path: __dirname + '/dist',
   },
   module: {
     rules: [
       {
         // We can expand this to test other files as well
-        test: /\.jpg$/i,
+        test: /\.(png|jpe?g|gif)$/i,
         use: [
           {
             // The actual loader is implemented here
@@ -33,7 +33,7 @@ module.exports = {
               name(file) {
                 return '[path][name].[ext]';
               },
-              publicPath: function (url) {
+              publicPath(url) {
                 return url.replace('../', '/assets/');
               },
             },
@@ -46,17 +46,32 @@ module.exports = {
       },
     ],
   },
-  // The mode in which we want the webpack to run
-  // By default, webpack runs in production mode.
-  mode: 'development', // In this mode, webpack will minify our code for us automatically
-
   plugins: [
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
     }),
     new BundleAnalyzerPlugin({
-      analyzerMode: 'static', // the report outputs to an HTML file in the dist folder
+      analyzerMode: 'static',
     }),
+    // new WebpackPwaManifest({
+    //   name: "Food Event",
+    //   short_name: "Foodies",
+    //   description: "An app that allows you to view upcoming food events.",
+    //   background_color: "#01579b",
+    //   theme_color: "#ffffff",
+    //   fingerprints: false,
+    //   inject: false,
+    //   icons: [{
+    //     src: path.resolve("assets/img/icons/icon-512x512.png"),
+    //     sizes: [96, 128, 192, 256, 384, 512],
+    //     destination: path.join("assets", "icons")
+    //   }]
+    // })
   ],
+  // The mode in which we want the webpack to run
+  // By default, webpack runs in production mode.
+  mode: 'development', // In this mode, webpack will minify our code for us automatically
 };
+
+module.exports = config;
